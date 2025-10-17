@@ -354,20 +354,17 @@ export class FlowerRingSystem {
         this.flowerRing = new THREE.Group();
         this.scene.add(this.flowerRing);
 
-        const textureLoader = new THREE.TextureLoader();
-        textureLoader.setCrossOrigin('anonymous');
-
-        textureLoader.load(
+        // Danh sách 5 ảnh cố định
+        const imageUrls = [
             'assets/images/b1.jpeg',
-            (texture) => {
-                this.processAndCreateFlowers(texture);
-            },
-            undefined,
-            (error) => {
-                console.error('Lỗi load texture:', error);
-                this.createFallbackTexture();
-            }
-        );
+            'assets/images/b2.jpeg', 
+            'assets/images/b3.jpeg',
+            'assets/images/b4.jpeg',
+            'assets/images/b5.jpeg'
+        ];
+
+        // Load tất cả 5 ảnh cùng lúc
+        this.preloadTextures(imageUrls);
     }
 
     createFallbackTexture() {
@@ -1085,6 +1082,11 @@ export class FlowerRingSystem {
                 this.currentTextures = [...validTextures];
 
                 console.log(`✅ Successfully preloaded ${validTextures.length} textures`);
+
+                // Nếu chưa có sprite nào, tạo sprites trước rồi mới random material
+                if (this.flowers.length === 0 && validTextures[0]) {
+                    this.createFlowers(validTextures[0]);
+                }
 
                 // === SỬ DỤNG MATERIAL CACHE ===
                 this.randomizeFlowerTexturesWithCache();
